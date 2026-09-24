@@ -1,0 +1,31 @@
+# I2C bus 3, addr 72 — register reads
+# Single-byte reads: `i2c read 3 72 <reg>` -> <I2C READ 3 72 <reg>=<val> OK>
+# Device appears on bus 3 only while an iPhone X is attached in recovery mode.
+# Values repeat with a 20-register period (verified across regs 0-59);
+# only the unique 20 bytes are listed. Raw observed bytes; no semantics claimed.
+
+reg  val
+00   04
+01   fd
+02   40
+03   c0
+04   00
+05   7c
+06   76
+07   10
+08   00
+09   00
+0a   05
+0b   93
+0c   55
+0d   01
+0e   01
+0f   01
+10   00
+11   ff
+12   00
+13   00
+
+# regs 14-3b repeat the same 20 bytes (verified across regs 0-59).
+# Higher registers diverge from the pattern (spot checks: reg 69=00,
+# reg 70=05, reg 80=73, reg 90=00) and are not tabulated.
