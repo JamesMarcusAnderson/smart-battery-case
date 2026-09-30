@@ -1,11 +1,20 @@
-# Smart Battery Case — Debug Console & I2C Telemetry
+# Smart Battery Case — opened the debug console, mapped the whole surface
 
-Hardware telemetry research on the **Apple Smart Battery Case (iPhone XS, model A2070)**,
-conducted August 2025 through the case's own internal debug console.
+Apple's Smart Battery Case (iPhone XS, model A2070) hides a full interactive
+debug shell behind its Lightning port. I opened it over serial, enumerated
+every command it offers, scanned all five I2C buses, and pulled live battery
+telemetry from the management unit — then documented exactly where the
+investigation provably stopped: **readout protection is at RDP level 2, so
+firmware extraction was not possible.**
 
-The case exposes a full interactive debug shell over serial. This repo documents what that
-shell offers, what the I2C buses carry, and where the investigation verifiably stopped:
-**readout protection is at RDP level 2, so firmware extraction was not possible.**
+This is hardware diagnostics and telemetry analysis: enumerate the surface,
+measure what's measurable, and write down the wall you hit as carefully as
+the ground you covered.
+
+**Scope:** all work on my own personally-owned case in an isolated bench
+setup. Read-only in outcome — the one attempted register write did not
+persist (documented in [notes/bmu-telemetry.md](notes/bmu-telemetry.md)).
+No third-party systems, no bypass material.
 
 ## What was done
 
@@ -44,6 +53,19 @@ Quasar 1.8.4-QSEVT2 (DEBUG) Debug May 25 2019, 11:40:03
 | BMU sealed: `bmu unseal` → `ERR`; `bmu page` → `ERR` | console |
 | Inductive-charger memory reads → `AERR`; firmware download/OTP ops → `DLERR`/`VERR` | `ind mem read`, `ind fulldl`, `ind burnotp` |
 | Device auth handshake attempts → `ERR` | `auth run …` |
+
+## Dead ends
+
+- **The write that didn't stick:** an I2C write to the BMU's register `0x00`
+  returned `OK` — then readback showed the register unchanged. The chip
+  accepted the command and ignored it. Documented in
+  [notes/bmu-telemetry.md](notes/bmu-telemetry.md); kept because the
+  behavior itself is data about the chip's access control.
+- **Every extraction path failed closed:** `ind mem read` → `AERR`,
+  `ind fulldl` → `DLERR`, `bmu unseal` → `ERR`, `auth run` → `ERR`.
+  The complete failure catalog is in [notes/limits.md](notes/limits.md) —
+  every console-exposed path was tried, every one failed closed, and none
+  was omitted.
 
 ## What this is NOT
 
