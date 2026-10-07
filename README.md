@@ -19,7 +19,7 @@ No third-party systems, no bypass material.
 ## What was done
 
 - Opened the case's debug console over a serial connection (`screen /dev/tty.usbserial-2 115200`)
-  via an Apple DCSD cable. James's documented setup also included a female
+  via an Apple DCSD cable. My documented setup also included a female
   Lightning breakout board mated to the case's male Lightning port so the
   console stayed reachable during the session.
 - The console identifies itself on boot:
